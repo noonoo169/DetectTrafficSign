@@ -17,9 +17,10 @@ from utils.dataloaders import LoadStreams
 from utils.general import ( Profile,check_img_size, check_imshow, cv2, non_max_suppression,  scale_boxes)
 from utils.plots import Annotator, colors
 from utils.torch_utils import select_device, smart_inference_mode
-from fireBaseConfig import FBConFig
+from Coordinate import CoordinateFinder
 
-fireBaseDB = FBConFig()
+
+coordinate = CoordinateFinder()
 
 @smart_inference_mode()
 def run(
@@ -74,7 +75,7 @@ def run(
         with dt[2]:
             pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         
-        temp = ""
+        label = ""
         index = -1
         # Process predictions
         for i, det in enumerate(pred):  # per image
@@ -109,9 +110,7 @@ def run(
             cv2.imshow(str(p), im0)
             cv2.waitKey(1)
        
-        if temp != "":
-            # gps = getCurrentGPS()
-            print("Vị trí nhãn:", index, temp)
-            fireBaseDB.sendGPS(temp)
-
+        if label != "":
+            latitude, longitude = coordinate.getGpsCoordi()
+            coordinate.sendGPS(label, latitude, longitude)
 run()

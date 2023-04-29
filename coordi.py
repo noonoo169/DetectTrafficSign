@@ -1,4 +1,5 @@
 #convert raw NMEA string into degree decimal format   
+import serial
 def convert_to_degrees(raw_value):
     decimal_value = raw_value/100.00
     degrees = int(decimal_value)
@@ -7,10 +8,10 @@ def convert_to_degrees(raw_value):
     position = "%.4f" %(position)
     return position    
 
+gpgga_info = "$GPGGA,"
+ser = serial.Serial ("/dev/ttyAMA0")              #Open port with baud rate
 def getGpsCoordi():
     while True:
-        gpgga_info = "$GPGGA,"
-        ser = serial.Serial ("/dev/ttyS0")              #Open port with baud rate
         received_data = (str)(ser.readline())                   #read NMEA string received
         GPGGA_data_available = received_data.find(gpgga_info)   #check for NMEA GPGGA string                 
         if (GPGGA_data_available>0):
@@ -23,4 +24,7 @@ def getGpsCoordi():
             lat_in_degrees = convert_to_degrees(lat)    #get latitude in degree decimal format
             long_in_degrees = convert_to_degrees(long) #get longitude in degree decimal format
             
-            print("lat in degrees:", lat_in_degrees," long in degree: ", long_in_degrees, '\n')
+            print("lat in degrees:", lat_in_degrees," long in degree: ", long_in_degrees)
+            break
+
+getGpsCoordi()
