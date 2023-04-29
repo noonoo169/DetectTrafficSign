@@ -92,7 +92,7 @@ def run(
 
                 # Print results
                 index = int(det[0, 5].unique())
-                temp += f"{names[index]}"
+                label += f"{names[index]}"
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
                     if view_img:  # Add bbox to image
