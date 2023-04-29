@@ -17,36 +17,9 @@ from utils.dataloaders import LoadStreams
 from utils.general import ( Profile,check_img_size, check_imshow, cv2, non_max_suppression,  scale_boxes)
 from utils.plots import Annotator, colors
 from utils.torch_utils import select_device, smart_inference_mode
+from fireBaseConfig import FBConFig
 
-# import serial
-# import pynmea2
-
-# def getCurrentGPS():
-#     while True:
-#         port="/dev/ttyAMA0"
-#         ser=serial.Serial(port, baudrate=9600, timeout=0.5)
-#         dataout = pynmea2.NMEAStreamReader()
-#         newdata=ser.readline()
-
-#         if newdata[0:6] == "$GPRMC":
-#             newmsg=pynmea2.parse(newdata)
-#             lat=newmsg.latitude
-#             lng=newmsg.longitude
-#             gps = str(lat) + "," + str(lng)
-#             return gps
-
-
-from send import firebaseConfig
-import pyrebase
-import random
-
-firebase=pyrebase.initialize_app(firebaseConfig)
-db=firebase.database()
-
-def sendGPS(label):
-    data = {"LAT": random.randint(1,10), "LNG": random.randint(11,20), "Label": label}
-    db.update(data)
-    print(data)
+fireBaseDB = FBConFig()
 
 @smart_inference_mode()
 def run(
@@ -139,6 +112,6 @@ def run(
         if temp != "":
             # gps = getCurrentGPS()
             print("Vị trí nhãn:", index, temp)
-            sendGPS(temp)
-    
+            fireBaseDB.sendGPS(temp)
+
 run()
