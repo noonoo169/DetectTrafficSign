@@ -1,7 +1,6 @@
 import pyrebase
 import pynmea2
 import serial
-import random
 class FBConFig:
     def __init__(self):
         self.firebaseConfig = {
@@ -33,4 +32,6 @@ class FBConFig:
                 lat=newmsg.latitude
                 lng=newmsg.longitude
                 return lat, lng
+
+    
 
