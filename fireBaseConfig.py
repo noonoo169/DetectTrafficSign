@@ -1,4 +1,6 @@
 import pyrebase
+import pynmea2
+import serial
 import random
 class FBConFig:
     def __init__(self):
@@ -15,7 +17,20 @@ class FBConFig:
         self.db = self.firebase.database()
     
     def sendGPS(self, label):
-        data = {"LAT": random.randint(1,10), "LNG": random.randint(11,20), "Label": label}
+        latitude, longitude = self.getGPS()
+        data = {"LAT": latitude, "LNG": longitude, "Label": label}
         self.db.update(data)
         print(data)
+
+    def getGPS(self):
+        port="/dev/ttyAMA0"
+        ser=serial.Serial(port, baudrate=9600, timeout=0.5)
+        dataout = pynmea2.NMEAStreamReader()
+        newdata=ser.readline()
+        n_data = newdata.decode('latin-1')
+        if n_data[0:6] == '$GPRMC':
+                newmsg=pynmea2.parse(n_data)
+                lat=newmsg.latitude
+                lng=newmsg.longitude
+                return lat, lng
 
